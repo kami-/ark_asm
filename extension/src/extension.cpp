@@ -81,6 +81,15 @@ namespace {
         }
     }
 
+    void stripDoubleQuotedParams(std::vector<std::string>& params) {
+        for (auto&& param : params) {
+            if (param.length() >= 2 && param.front() == '"' && param.back() == '"') {
+                param.erase(0, 1);
+                param.pop_back();
+            }
+        }
+    }
+
     bool initialize() {
         std::string extensionFolder(getExtensionFolder());
         std::string configFilePath(fmt::format("{}{}{}", extensionFolder, Poco::Path::separator(), CONFIG_FILE));
@@ -122,10 +131,10 @@ namespace {
             return RESPONSE_RETURN_CODE_ERROR;
         }
         Request request{ "" };
-        if (argCount > 0) {
-            request.command = args[0];
-        }
-        request.params.insert(request.params.end(), args + 1, args + argCount);
+        request.command = std::string(function);
+        request.params.insert(request.params.end(), args, args + argCount);
+        stripDoubleQuotedParams(request.params);
+        log::logger->trace("Command '{}', params size '{}'.", request.command, request.params.size());
         if (request.command == "version") {
             respond(output, fmt::format("\"{}\"", ARK_ASM_EXTENSION_VERSION));
             return RESPONSE_RETURN_CODE_OK;
