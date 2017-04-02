@@ -3,3 +3,5 @@ extension/build/*
 extension/include/spdlog
 
 /node_modules
+
+/release

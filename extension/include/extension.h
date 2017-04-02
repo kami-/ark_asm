@@ -28,7 +28,7 @@ namespace ark_asm {
 
 namespace extension {
 
-    bool initialize();
+    bool initialize(int processId);
     void finalize();
     int call(char *output, int outputSize, const char *function, const char **args, int argCount);
     Request popRequest();

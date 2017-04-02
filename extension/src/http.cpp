@@ -16,6 +16,7 @@ namespace ark_asm {
 namespace http {
 
 namespace {
+    int processId;
     std::string host, token;
     uint32_t port;
     Poco::UUID missionId;
@@ -49,7 +50,8 @@ namespace {
         return Poco::Nullable<std::string>();
     }
 
-    bool initialize(const std::string& host_, uint32_t port_, const std::string& token_) {
+    bool initialize(int _processId, const std::string& host_, uint32_t port_, const std::string& token_) {
+        processId = _processId;
         host = host_;
         port = port_;
         token = token_;
@@ -88,6 +90,7 @@ namespace {
             else if (request.command == "mission.snapshot" && request.params.size() % 2 == 0) {
                 Poco::JSON::Object data;
                 data.set("missionId", missionId.toString());
+                data.set("processId", processId);
                 for (size_t i = 0; i < request.params.size(); i += 2) {
                     data.set(request.params[i], request.params[i + 1]);
                 }

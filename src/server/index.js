@@ -1,63 +1,51 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const WebSocket = require("ws");
+const fs = require("fs");
 
-const missions = {};
-const app = express();
+const Mission = require("./Mission");
 
-app.use(bodyParser.json());
-
-app.post("/mission-snapshot", (request, response) => {
-    const snapshot = parseSnapshot(request.body);
-    var mission = missions[snapshot.missionId];
-    if (mission) {
-        mission = processSnapshot(mission, snapshot);
-    } else {
-        mission = createMission(snapshot);
+function loadConfig() {
+    const defaultConfig = {
+        "httpPort": 8083,
+        "webSocketPort": 8084
+    };
+    try {
+        var config = JSON.parse(fs.readFileSync("./config.json", "utf8"));
+        return config;
+    } catch (e) {
+        console.log("Error reading the config file, using default config: ", e);
+        return defaultConfig;
     }
-    missions[snapshot.missionId] = mission;
-    broadcastMission(mission);
-    response.json({});
-});
+}
 
-const server = app.listen(80, () => {
-    console.log(`Listening on port ${server.address().port}.`);
-});
-
-function parseSnapshot(rawSnapshot) {
-    ["tickTime", "fps", "fpsMin", "frameNumber", "conditionEvaluationCount", "playerCount", "localAiCount", "remoteAiCount", "entityCount"].forEach(prop => {
-        rawSnapshot[prop] = parseFloat(rawSnapshot[prop]);
+function broadcastMission(clients, mission) {
+    clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(mission);
+        }
     });
-    return rawSnapshot;
 }
 
-function createMission(snapshot) {
-    const mission = {
-        missionId: snapshot.missionId,
-        previousSnapshot: snapshot
-    };
-    missions[snapshot.missionId] = mission;
-    return mission;
+function start() {
+    const config = loadConfig();
+
+    const wss = new WebSocket.Server({
+        perMessageDeflate: false,
+        port: config.webSocketPort
+    });
+
+    const app = express();
+    app.use(bodyParser.json());
+    app.post("/mission-snapshot", (request, response) => {
+        const mission = Mission.processSnapshot(request.body);
+        broadcastMission(wss.clients, mission);
+        response.json({});
+    });
+
+    const server = app.listen(config.httpPort, () => {
+        console.log(`HTTP listening on port ${server.address().port}.`);
+    });
 }
 
-function processSnapshot(mission, snapshot) {
-    const previousSnapshot = mission.previousSnapshot;
-    const cps = (snapshot.conditionEvaluationCount - previousSnapshot.conditionEvaluationCount) / (snapshot.tickTime - previousSnapshot.tickTime);
-    return {
-        missionId: snapshot.missionId,
-        missionName: snapshot.missionName,
-        tickTime: snapshot.tickTime,
-        fps: snapshot.fps,
-        fpsMin: snapshot.fpsMin,
-        cps: cps,
-        playerCount: snapshot.playerCount,
-        localAiCount: snapshot.localAiCount,
-        remoteAiCount: snapshot.remoteAiCount,
-        entityCount: snapshot.entityCount,
-        previousSnapshot: snapshot
-    };
-}
-
-function broadcastMission(mission) {
-    console.log(mission);
-    console.log("+++++++++++++++++++++++++++++++");
-}
+start();

@@ -1,0 +1,4 @@
+{
+    "httpPort": 8083,
+    "webSocketPort": 8084
+}

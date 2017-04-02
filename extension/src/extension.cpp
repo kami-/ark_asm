@@ -90,7 +90,7 @@ namespace {
         }
     }
 
-    bool initialize() {
+    bool initialize(int processId) {
         std::string extensionFolder(getExtensionFolder());
         std::string configFilePath(fmt::format("{}{}{}", extensionFolder, Poco::Path::separator(), CONFIG_FILE));
         Poco::File file(configFilePath);
@@ -110,7 +110,7 @@ namespace {
         uint32_t port = getUIntProperty(config, "ark_asm.server.port");
         std::string token = getStringProperty(config, "ark_asm.server.token");
         
-        http::initialize(host, port, token);
+        http::initialize(processId, host, port, token);
 
         log::logger->info("Starting ark_asm_extension version '{}'.", ARK_ASM_EXTENSION_VERSION);
         return true;

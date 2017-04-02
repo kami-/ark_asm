@@ -12,7 +12,7 @@
 BOOL APIENTRY DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved) {
     switch (fdwReason) {
     case DLL_PROCESS_ATTACH:
-        ark_asm::extension::initialize();
+        ark_asm::extension::initialize(GetCurrentProcessId());
         break;
 
     case DLL_PROCESS_DETACH:
@@ -68,12 +68,21 @@ static void extension_finalize() {
 #include <string>
 #include <regex>
 
+#ifdef _WIN32
+    #define WIN32_LEAN_AND_MEAN
+    #include <windows.h>
+#elif
+#endif
+
 int main(int argc, char* argv[]) {
     std::string line = "";
     const int outputSize = 10000;
     char *output = new char[outputSize];
 
-    ark_asm::extension::initialize();
+#ifdef _WIN32
+    ark_asm::extension::initialize(GetCurrentProcessId());
+#elif
+#endif
     std::cout
         << "Type 'exit' to close console." << std::endl
         << "Use it as <command>:<param1>,<param2>... (No support for escaping ':' and ',')" << std::endl
