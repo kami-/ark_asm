@@ -22,7 +22,7 @@ function loadConfig() {
 function broadcastMission(clients, mission) {
     clients.forEach(client => {
         if (client.readyState === WebSocket.OPEN) {
-            client.send(mission);
+            client.send(JSON.stringify(mission));
         }
     });
 }
@@ -37,6 +37,7 @@ function start() {
 
     const app = express();
     app.use(bodyParser.json());
+    app.use("/", express.static("resources"));
     app.post("/mission-snapshot", (request, response) => {
         const mission = Mission.processSnapshot(request.body);
         broadcastMission(wss.clients, mission);

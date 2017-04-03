@@ -3,15 +3,13 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry: {
-        app: "./index.js"
+        app: "./app.js"
     },
 
     output: {
-        path: path.resolve(__dirname, "../../release/server"),
-        filename: "[name].js"
+        path: path.resolve(__dirname, "../../release/server/resources"),
+        filename: "js/[name].js"
     },
-
-    target: "node",
 
     resolve: {
         extensions: [".js"],
@@ -20,7 +18,7 @@ module.exports = {
 
     plugins: [
         new CopyWebpackPlugin([
-            { from: "config.json" }
+            { from: "index.html" }
         ])
     ]
 };
