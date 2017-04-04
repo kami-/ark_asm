@@ -8,41 +8,43 @@ function parseSnapshot(rawSnapshot) {
 }
 
 function createMission(snapshot) {
-    const mission = {
-        missionId: snapshot.missionId,
+    var mission = {
+        cps: 0,
         previousSnapshot: snapshot
     };
+    updateMission(mission, snapshot);
     missions[snapshot.missionId] = mission;
     return mission;
 }
 
 function updateMission(mission, snapshot) {
     const previousSnapshot = mission.previousSnapshot;
-    const cps = (snapshot.conditionEvaluationCount - previousSnapshot.conditionEvaluationCount) / (snapshot.tickTime - previousSnapshot.tickTime);
-    return {
-        processId: snapshot.processId,
-        missionId: snapshot.missionId,
-        missionName: snapshot.missionName,
-        tickTime: snapshot.tickTime,
-        fps: snapshot.fps,
-        fpsMin: snapshot.fpsMin,
-        cps: cps,
-        playerCount: snapshot.playerCount,
-        localAiCount: snapshot.localAiCount,
-        remoteAiCount: snapshot.remoteAiCount,
-        entityCount: snapshot.entityCount,
-        previousSnapshot: snapshot
-    };
+    const elapsedTime = (snapshot.tickTime - previousSnapshot.tickTime);
+    const cps = elapsedTime === 0
+        ? 0
+        : (snapshot.conditionEvaluationCount - previousSnapshot.conditionEvaluationCount) / elapsedTime;
+    mission.processId = snapshot.processId;
+    mission.missionId = snapshot.missionId;
+    mission.missionName = snapshot.missionName;
+    mission.tickTime = snapshot.tickTime;
+    mission.fps = snapshot.fps;
+    mission.fpsMin = snapshot.fpsMin;
+    mission.cps = cps;
+    mission.playerCount = snapshot.playerCount;
+    mission.localAiCount = snapshot.localAiCount;
+    mission.remoteAiCount = snapshot.remoteAiCount;
+    mission.entityCount = snapshot.entityCount;
+    mission.previousSnapshot = snapshot;
 }
 
 function processSnapshot(snapshot) {
+    parseSnapshot(snapshot);
     var mission = missions[snapshot.missionId];
     if (mission) {
-        mission = updateMission(mission, snapshot);
+        updateMission(mission, snapshot);
     } else {
         mission = createMission(snapshot);
     }
-    missions[snapshot.missionId] = mission;
     return mission;
 }
 
