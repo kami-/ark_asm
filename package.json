@@ -10,8 +10,8 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.17.1",
+    "d3": "^3.5.17",
     "express": "^4.15.2",
-    "rickshaw": "^1.6.0",
     "ws": "^2.2.2"
   },
   "devDependencies": {
