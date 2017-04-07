@@ -1,38 +1,5 @@
-const d3 = require("d3");
+const Graph = require("./Graph");
 
-const seriesConfig = {
-    fps: {
-        label: "FPS",
-        maxValue: 70
-    },
-    fpsMin: {
-        label: "FPS Min",
-        maxValue: 70
-    },
-    cps: {
-        label: "CPS",
-        maxValue: 70
-    },
-    playerCount: {
-        label: "Players",
-        maxValue: 400
-    },
-    localAiCount: {
-        label: "Local AI",
-        maxValue: 1000
-    },
-    remoteAiCount: {
-        label: "Remote AI",
-        maxValue: 1000
-    },
-    entityCount: {
-        label: "Entities",
-        maxValue: 1000
-    }
-};
-const seriesAxes = Object.getOwnPropertyNames(seriesConfig);
-
-const shownSeconds = 300;
 const missions = {};
 const webSocket = new WebSocket('ws://localhost:8084');
 
@@ -47,28 +14,29 @@ function processMission(rawMission) {
     if (!mission) {
         mission = createMission(rawMission);
         missions[rawMission.missionId] = mission;
-        createGraph(mission);
+        mission.graph = Graph.createGraph("#missions > .mission > .graph", mission, 900, 500);
         console.log("graph created", mission.graph);
     }
     console.log(mission);
-    pushSeriesData(mission, rawMission);
-    updateGraph(mission);
+    pushData(mission, rawMission);
+    mission.tickTime = rawMission.tickTime;
+    Graph.updateGraph(mission.graph, mission.tickTime);
 }
 
 function createMission(rawMission) {
     return {
         missionId: rawMission.missionId,
-        seriesData: seriesAxes.reduce((acc, prop) => {
+        data: Graph.seriesAxes.reduce((acc, prop) => {
             acc[prop] = [];
             return acc;
         }, {})
     };
 }
 
-function pushSeriesData(mission, rawMission) {
+function pushData(mission, rawMission) {
     const toPointWithTickTime = toPoint.bind(null, rawMission.tickTime);
-    seriesAxes.forEach(prop => {
-        mission.seriesData[prop].push(toPointWithTickTime(rawMission[prop]));
+    Graph.seriesAxes.forEach(prop => {
+        mission.data[prop].push(toPointWithTickTime(rawMission[prop]));
     });
 }
 
@@ -82,79 +50,10 @@ setInterval(() => {
         tickTime: tm,
         missionId: "123"
     };
-    seriesAxes.forEach(prop => {
+    Graph.seriesAxes.forEach(prop => {
         rawMission[prop] = Math.random() * seriesConfig[prop].maxValue;
     });
     tm = tm + 5;
     console.log(tm, "generated rawMission", rawMission);
     processMission(rawMission);
-}, 5000);
-
-function createGraph(mission) {
-    const width = 900,
-        height = 500;
-
-    const x = d3.scale.linear()
-        .domain([0, shownSeconds])
-        .range([0, width]);
-
-    const y = d3.scale.linear()
-        .domain([0, 1000])
-        .range([height, 0]);
-
-    const line = d3.svg.line()
-        //.interpolate('basis')
-        .x(d => x(d.x))
-        .y(d => y(d.y));
-
-    const svg = d3.select("#missions > .graph").append("svg")
-        .attr("class", "chart")
-        .attr("width", width)
-        .attr("height", height + 50)
-
-    const xAxis = d3.svg.axis()
-        .tickFormat(d => "" + Math.floor(d/60) + "m")
-        .scale(x)
-        .orient("bottom");
-
-    const axis = svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(xAxis)
-
-    const paths = svg.append("g")
-
-    mission.seriesPaths = {};
-    seriesAxes.forEach(prop => {
-        const path = paths.append("path")
-            .data([mission.seriesData[prop]])
-            .attr("class", prop + " group")
-            .style("stroke", "black");
-        mission.seriesPaths[prop] = path;
-    });
-
-    mission.graph = {
-        x: x,
-        y: y,
-        line: line,
-        axis: axis,
-        xAxis: xAxis,
-        paths: paths
-    };
-}
-
-function updateGraph(mission) {
-    seriesAxes.forEach(prop => {
-        mission.seriesPaths[prop]
-            .attr("d", mission.graph.line);
-    });
-
-    if (tm >= shownSeconds) {
-        mission.graph.x.domain([tm - shownSeconds, tm]);
-    }
-
-    mission.graph.axis.transition()
-        .duration(1)
-        .ease("linear")
-        .call(mission.graph.xAxis);
-}
+}, 200);
