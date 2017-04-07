@@ -7,6 +7,7 @@
 
 namespace ark_asm {
 
+    const std::string MISSION_INIT_PATH = "/mission-init";
     const std::string MISSION_SNAPSHOT_PATH = "/mission-snapshot";
 
     struct Request;

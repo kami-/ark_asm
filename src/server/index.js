@@ -3,7 +3,8 @@ const bodyParser = require("body-parser");
 const WebSocket = require("ws");
 const fs = require("fs");
 
-const Mission = require("./Mission");
+const Server = require("./Server");
+const Snapshot = require("./Snapshot");
 
 function loadConfig() {
     const defaultConfig = {
@@ -19,10 +20,10 @@ function loadConfig() {
     }
 }
 
-function broadcastMission(clients, mission) {
+function broadcastToClients(clients, data) {
     clients.forEach(client => {
         if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify(mission));
+            client.send(JSON.stringify(data));
         }
     });
 }
@@ -38,9 +39,19 @@ function start() {
     const app = express();
     app.use(bodyParser.json());
     app.use("/", express.static("resources"));
+
+    app.post("/mission-init", (request, response) => {
+        const serverId = request.body.serverId;
+        Server.removeServer(serverId);
+        broadcastToClients(wss.clients, { type: "mission-init", serverId: serverId });
+        response.json({});
+    });
+
     app.post("/mission-snapshot", (request, response) => {
-        const mission = Mission.processSnapshot(request.body);
-        broadcastMission(wss.clients, mission);
+        const snapshot = Snapshot.parseSnapshot(request.body);
+        const server = Server.getOrCreateServer(snapshot);
+        Server.updateServer(server, snapshot);
+        broadcastToClients(wss.clients, { type: "mission-snapshot", snapshot: server });
         response.json({});
     });
 

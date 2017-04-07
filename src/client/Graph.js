@@ -50,6 +50,7 @@ function createGraph(container, server, width, height) {
     }, {});
 
     return {
+        svg: svg,
         xScale: xScale,
         xAxis: xAxis,
         xAxisView: xAxisView,

@@ -14,17 +14,25 @@ function serverView(server) {
     const fields =  Config.seriesAxes.map(prop => {
         const seriesConfig = Config.series[prop];
         const data = server.data[prop];
-        return fieldView(seriesConfig.label, data[data.length - 1].y, seriesConfig.color);
+        const lastValue = data.length > 0 ? data[data.length - 1].y : 0;
+        return fieldView(seriesConfig.label, lastValue, seriesConfig.color);
     });
 
     return m("div.server", [
         m("div.summary", [
+            m("div.details", detailsView(server.missionName)),
             m("div.series", fields)
         ]),
-        m("div.graph-container", { oncreate: function(vnode) {
-            server.graph = Graph.createGraph(vnode.dom, server, Config.graph.width, Config.graph.height);
-        }})
+        m("div.graph-container", {
+            oncreate: function(vnode) {
+                server.graph = Graph.createGraph(vnode.dom, server, Config.graph.width, Config.graph.height);
+            }
+        })
     ]);
+}
+
+function detailsView(missionName) {
+    return m("span", missionName);
 }
 
 function fieldView(label, value, color) {
