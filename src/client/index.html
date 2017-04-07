@@ -14,22 +14,45 @@
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
         }
 
-        #missions {
+        #servers {
             width: 100%;
             display: table;
+            margin: 10px;
         }
 
-        #missions > .mission {
+        #servers > .server {
             display: table-row;
         }
 
-        .mission > .summary {
-            width: 20%;
+        .server > .summary {
+            width: 220px;
             display: table-cell;
+            vertical-align: middle;
+            border-top: 1px solid #333;
         }
 
-        .mission > .grpah {
+        .field {
+            color: white;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+
+        .field > label {
+            display: inline-block;
+            padding: 0 5px 0 5px;
+            width: 120px;
+        }
+
+        .field > span.value {
+            display: inline-block;
+            padding: 0 5px 0 5px;
+            width: 50px;
+            text-align: right;
+        }
+
+        .server > .graph-container {
             display: table-cell;
+            border-top: 1px solid #333;
         }
 
         .graph .bg {
@@ -54,6 +77,7 @@
         .graph .axis .domain {
             fill: none;
             stroke: white;
+            stroke-width: 0.5px;
         }
 
         .graph .line {
@@ -64,15 +88,6 @@
     </style>
 </head>
 <body>
-    <div id="missions">
-        <div class="mission">
-            <div class="summary">
-            </div>
-            <div class="graph">
-            </div>
-        </div>
-    </div>
-
     <script src="js/app.js"></script>
 </body>
 </html>

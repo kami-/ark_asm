@@ -1,42 +1,31 @@
+const m = require("mithril");
 const Graph = require("./Graph");
+const Store = require("./Store");
+const Config = require("./Config");
+const Server = require("./component/Server");
 
-const missions = {};
 const webSocket = new WebSocket('ws://localhost:8084');
 
 webSocket.addEventListener('message', function (event) {
-    var rawMission = JSON.parse(event.data);
-    console.log('Message from server', rawMission);
-    processMission(rawMission);
+    var rawSnapshot = JSON.parse(event.data);
+    processSnapshot(rawSnapshot);
 });
 
-function processMission(rawMission) {
-    var mission = missions[rawMission.missionId];
-    if (!mission) {
-        mission = createMission(rawMission);
-        missions[rawMission.missionId] = mission;
-        mission.graph = Graph.createGraph("#missions > .mission > .graph", mission, 900, 500);
-        console.log("graph created", mission.graph);
-    }
-    console.log(mission);
-    pushData(mission, rawMission);
-    mission.tickTime = rawMission.tickTime;
-    Graph.updateGraph(mission.graph, mission.tickTime);
+function processSnapshot(rawSnapshot) {
+    var server = Store.getOrCreateServer(rawSnapshot);
+    server.tickTime = rawSnapshot.tickTime;
+    pushData(server, rawSnapshot);
+    m.mount(document.body, Server.Servers);
+    Graph.updateGraph(server.graph, server.tickTime);
 }
 
-function createMission(rawMission) {
-    return {
-        missionId: rawMission.missionId,
-        data: Graph.seriesAxes.reduce((acc, prop) => {
-            acc[prop] = [];
-            return acc;
-        }, {})
-    };
-}
-
-function pushData(mission, rawMission) {
-    const toPointWithTickTime = toPoint.bind(null, rawMission.tickTime);
-    Graph.seriesAxes.forEach(prop => {
-        mission.data[prop].push(toPointWithTickTime(rawMission[prop]));
+function pushData(server, rawSnapshot) {
+    const toPointWithTickTime = toPoint.bind(null, server.tickTime);
+    const canShift = Graph.canShift(server.tickTime);
+    Config.seriesAxes.forEach(prop => {
+        const data = server.data[prop];
+        data.push(toPointWithTickTime(rawSnapshot[prop]));
+        if (canShift) { data.shift(); }
     });
 }
 
@@ -46,14 +35,27 @@ function toPoint(tickTime, y) {
 
 var tm = 0;
 setInterval(() => {
-    var rawMission = {
+    var rawSnapshot = {
         tickTime: tm,
-        missionId: "123"
+        serverId: "123"
     };
-    Graph.seriesAxes.forEach(prop => {
-        rawMission[prop] = Math.random() * seriesConfig[prop].maxValue;
+    Config.seriesAxes.forEach(prop => {
+        rawSnapshot[prop] = Math.random() * Config.series[prop].maxValue;
     });
     tm = tm + 5;
-    console.log(tm, "generated rawMission", rawMission);
-    processMission(rawMission);
+    processSnapshot(rawSnapshot);
 }, 200);
+
+
+var tm2 = 0;
+setInterval(() => {
+    var rawSnapshot = {
+        tickTime: tm2,
+        serverId: "1234"
+    };
+    Config.seriesAxes.forEach(prop => {
+        rawSnapshot[prop] = Math.random() * Config.series[prop].maxValue;
+    });
+    tm2 = tm2 + 5;
+    processSnapshot(rawSnapshot);
+}, 1000);
