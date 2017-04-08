@@ -12,7 +12,7 @@ const series = {
         cps: {
             label: "CPS",
             maxValue: 65,
-            color: "#F8A100"
+            color: "#E5E500"
         },
         playerCount: {
             label: "Players",
