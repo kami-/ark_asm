@@ -4,6 +4,7 @@
 #include "log.h"
 
 #include "Poco/JSON/Object.h"
+#include "Poco/Net/HTTPBasicCredentials.h"
 #include "Poco/Net/HTTPClientSession.h"
 #include "Poco/Net/HTTPRequest.h"
 #include "Poco/Net/HTTPResponse.h"
@@ -17,7 +18,7 @@ namespace http {
 
 namespace {
     int processId;
-    std::string host, token;
+    std::string host, token, username, password;
     uint32_t port;
     Poco::UUID serverId;
     std::mutex sessionMutex;
@@ -57,7 +58,8 @@ namespace {
 
         Poco::Net::HTTPClientSession session(host, port);
         Poco::Net::HTTPRequest httpRequest(Poco::Net::HTTPRequest::HTTP_POST, path, Poco::Net::HTTPRequest::HTTP_1_1);
-        httpRequest.add("Authorization", token);
+        Poco::Net::HTTPBasicCredentials credentials(username, password);
+        credentials.authenticate(httpRequest);
         httpRequest.setContentType("application/json");
         httpRequest.setContentLength(jsonStream.str().length());
         auto& httpRequestBodyStream = session.sendRequest(httpRequest);
@@ -73,11 +75,12 @@ namespace {
         session.reset();
     }
 
-    bool initialize(int _processId, const std::string& host_, uint32_t port_, const std::string& token_) {
+    bool initialize(int _processId, const std::string& host_, uint32_t port_, const std::string& username_, const std::string& password_) {
         processId = _processId;
         host = host_;
         port = port_;
-        token = token_;
+        username = username_;
+        password = password_;
         serverId = Poco::UUIDGenerator::defaultGenerator().createRandom();
         return true;
     }
@@ -127,7 +130,7 @@ namespace {
             }
         }
         catch (Poco::Exception e) {
-            log::logger->error("Unexpected error! Error code: '{}', Error message: {}", e.code(), e.displayText());
+            log::logger->error("Unexpected error! Error code: '{}', Error message: {}", e.code(), e.what(), e.displayText());
             response.returnCode = RESPONSE_RETURN_CODE_ERROR;
             response.data = fmt::format("\"Unexpected error! {}\"", e.displayText());
         }

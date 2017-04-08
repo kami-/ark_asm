@@ -36,7 +36,8 @@ function createGraph(container, server, width, height) {
         const yLine = d3.svg.line()
             .x(d => xScale(d.x))
             .y(d => yScale(d.y))
-            .interpolate("step-before");
+            //.interpolate("step-before");
+            .interpolate("linear");
         const path = pathsContainer.append("path")
             .data([server.data[prop]])
             .attr("class", "line " + prop)

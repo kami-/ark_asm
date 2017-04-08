@@ -30,10 +30,8 @@ function broadcastToClients(clients, data) {
 }
 
 function basicAuthConfig(config) {
-    const users = {};
-    users[config.username] = config.password;
     return basicAuth({
-        users: users,
+        users: config.users,
         challenge: true
     });
 }

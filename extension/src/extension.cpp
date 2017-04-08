@@ -108,9 +108,10 @@ namespace {
 
         std::string host = getStringProperty(config, "ark_asm.server.host");
         uint32_t port = getUIntProperty(config, "ark_asm.server.port");
-        std::string token = getStringProperty(config, "ark_asm.server.token");
+        std::string username = getStringProperty(config, "ark_asm.server.username");
+        std::string password = getStringProperty(config, "ark_asm.server.password");
         
-        http::initialize(processId, host, port, token);
+        http::initialize(processId, host, port, username, password);
 
         log::logger->info("Starting ark_asm_extension version '{}'.", ARK_ASM_EXTENSION_VERSION);
         return true;

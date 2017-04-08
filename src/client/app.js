@@ -4,7 +4,7 @@ const Store = require("./Store");
 const Config = require("./Config");
 const Server = require("./component/Server");
 
-const webSocket = new WebSocket("ws://localhost:8084");
+const webSocket = new WebSocket("ws://" + window.location.hostname + ":8084");
 
 webSocket.addEventListener('message', function (event) {
     const message = JSON.parse(event.data);

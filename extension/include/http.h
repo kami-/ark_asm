@@ -15,7 +15,7 @@ namespace ark_asm {
 
 namespace http {
 
-    bool initialize(int processId, const std::string& host_, uint32_t port_, const std::string& token_);
+    bool initialize(int processId, const std::string& host_, uint32_t port_, const std::string& username_, const std::string& password_);
     void finalize();
     void run();
     bool isRunning();
