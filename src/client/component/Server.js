@@ -20,7 +20,7 @@ function serverView(server) {
 
     return m("div.server", [
         m("div.summary", [
-            m("div.details", detailsView(server.missionName)),
+            m("div.details", detailsView(server.missionName, server.worldName)),
             m("div.series", fields)
         ]),
         m("div.graph-container", {
@@ -31,8 +31,8 @@ function serverView(server) {
     ]);
 }
 
-function detailsView(missionName) {
-    return m("span", missionName);
+function detailsView(missionName, worldName) {
+    return m("span", missionName + "." + worldName);
 }
 
 function fieldView(label, value, color) {

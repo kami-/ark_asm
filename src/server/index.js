@@ -1,4 +1,5 @@
 const express = require("express");
+const basicAuth = require("express-basic-auth");
 const bodyParser = require("body-parser");
 const WebSocket = require("ws");
 const fs = require("fs");
@@ -28,6 +29,15 @@ function broadcastToClients(clients, data) {
     });
 }
 
+function basicAuthConfig(config) {
+    const users = {};
+    users[config.username] = config.password;
+    return basicAuth({
+        users: users,
+        challenge: true
+    });
+}
+
 function start() {
     const config = loadConfig();
 
@@ -38,7 +48,8 @@ function start() {
 
     const app = express();
     app.use(bodyParser.json());
-    app.use("/", express.static("resources"));
+
+    app.use("/", [ basicAuthConfig(config), express.static("resources") ]);
 
     app.post("/mission-init", (request, response) => {
         const serverId = request.body.serverId;

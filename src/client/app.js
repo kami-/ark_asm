@@ -4,7 +4,7 @@ const Store = require("./Store");
 const Config = require("./Config");
 const Server = require("./component/Server");
 
-const webSocket = new WebSocket('ws://localhost:8084');
+const webSocket = new WebSocket("ws://localhost:8084");
 
 webSocket.addEventListener('message', function (event) {
     const message = JSON.parse(event.data);
@@ -27,6 +27,7 @@ function processMissionInit(serverId) {
 function processSnapshot(rawSnapshot) {
     var server = Store.getOrCreateServer(rawSnapshot.serverId);
     server.missionName = rawSnapshot.missionName;
+    server.worldName = rawSnapshot.worldName;
     server.tickTime = rawSnapshot.tickTime;
     pushData(server, rawSnapshot);
     m.mount(document.body, Server.Servers);

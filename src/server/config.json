@@ -1,4 +1,10 @@
 {
     "httpPort": 8083,
-    "webSocketPort": 8084
+    "webSocketPort": 8084,
+    "username": "admin",
+    "password": "admin",
+    "tokens": [
+        "server-token",
+        "hc-token"
+    ]
 }
