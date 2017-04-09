@@ -1,5 +1,5 @@
 const d3 = require("d3");
-const Config = require("./Config");
+const Config = require("../Config");
 
 function createGraph(container, server, width, height) {
     const xScale = d3.scale.linear()
@@ -36,7 +36,6 @@ function createGraph(container, server, width, height) {
         const yLine = d3.svg.line()
             .x(d => xScale(d.x))
             .y(d => yScale(d.y))
-            //.interpolate("step-before");
             .interpolate("linear");
         const path = pathsContainer.append("path")
             .data([server.data[prop]])
@@ -60,27 +59,26 @@ function createGraph(container, server, width, height) {
 }
 
 function updateGraph(graph, time) {
+    graph.xScale.domain([time - Config.graph.xLengthInSeconds, time]);
     Config.seriesAxes.forEach(prop => {
         const series = graph.series[prop];
-        series.path.attr("d", series.yLine);
+        series.path.attr("d", d => {
+            const pointsInDomain = d.filter(point => isPointInDomain(graph.xScale.domain(), point));
+            return series.yLine(pointsInDomain);
+        });
     });
-
-
-    if (canShift(time)) {
-        graph.xScale.domain([time - Config.graph.xLengthInSeconds, time]);
-    }
-
     graph.xAxisView.transition()
         .duration(1)
         .ease("linear")
         .call(graph.xAxis);
 }
 
-function canShift(time) {
-    return time >= Config.graph.xLengthInSeconds;
+function isPointInDomain(xDomain, point) {
+    return point.x >= xDomain[0] && point.x <= xDomain[1];
 }
 
 function formatTime(time) {
+    if (time < 0) { return "-"; }
     const minutes = Math.floor(time / 60) % 60;
     const hours = Math.floor(time / 3600);
     const minutesPrefix = minutes < 10 ? "0" : "";
@@ -90,6 +88,5 @@ function formatTime(time) {
 
 module.exports = {
     createGraph: createGraph,
-    updateGraph: updateGraph,
-    canShift: canShift
+    updateGraph: updateGraph
 }

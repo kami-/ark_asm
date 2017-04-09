@@ -1,9 +1,9 @@
 const m = require("mithril");
 const Config = require("../Config");
-const Graph = require("../Graph");
 const Store = require("../Store");
+const Graph = require("./Graph");
 
-const Servers = {
+const ServersComponent = {
     view: () => {
         const servers = Store.getServers().map(serverView);
         return m("div#servers", servers);
@@ -42,10 +42,6 @@ function fieldView(label, value, color) {
     ]);
 }
 
-function appendDOM(dom) {
-
-}
-
 module.exports = {
-    Servers: Servers
+    ServersComponent: ServersComponent
 }

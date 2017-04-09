@@ -1,28 +1,17 @@
 const m = require("mithril");
-const Graph = require("./Graph");
-const Store = require("./Store");
 const Config = require("./Config");
-const Server = require("./component/Server");
+const Store = require("./Store");
+const Graph = require("./view/Graph");
+const Server = require("./view/Server");
 
 const webSocket = new WebSocket("ws://" + window.location.hostname + ":8084");
 
-webSocket.addEventListener('message', function (event) {
+webSocket.addEventListener("message", function (event) {
     const message = JSON.parse(event.data);
-    if (message.type === "mission-init") {
-        processMissionInit(message.serverId);
-    }
-    else if (message.type === "mission-snapshot") {
+    if (message.type === "mission-snapshot") {
         processSnapshot(message.snapshot);
     }
 });
-
-function processMissionInit(serverId) {
-    var server = Store.getOrCreateServer(serverId);
-    server.tickTime = 0;
-    Config.seriesAxes.forEach(prop => {
-        server.data[prop].splice(0, server.data[prop].length);
-    });
-}
 
 function processSnapshot(rawSnapshot) {
     var server = Store.getOrCreateServer(rawSnapshot.serverId);
@@ -30,17 +19,15 @@ function processSnapshot(rawSnapshot) {
     server.worldName = rawSnapshot.worldName;
     server.tickTime = rawSnapshot.tickTime;
     pushData(server, rawSnapshot);
-    m.mount(document.body, Server.Servers);
+    m.mount(document.body, Server.ServersComponent);
     Graph.updateGraph(server.graph, server.tickTime);
 }
 
 function pushData(server, rawSnapshot) {
     const toPointWithTickTime = toPoint.bind(null, server.tickTime);
-    const canShift = Graph.canShift(server.tickTime);
     Config.seriesAxes.forEach(prop => {
         const data = server.data[prop];
         data.push(toPointWithTickTime(rawSnapshot[prop]));
-        if (canShift) { data.shift(); }
     });
 }
 
@@ -54,7 +41,8 @@ var int1 = setInterval(() => {
     var rawSnapshot = {
         tickTime: tm,
         serverId: "123",
-        missionName: "ark44_co98_the_great_crusade.Colleville"
+        missionName: "ark44_co98_the_great_crusade",
+        worldName: "Colleville"
     };
     Config.seriesAxes.forEach(prop => {
         rawSnapshot[prop] = Math.random() * Config.series[prop].maxValue;
@@ -63,13 +51,13 @@ var int1 = setInterval(() => {
     processSnapshot(rawSnapshot);
 }, 200);
 
-
 var tm2 = 0;
 var int2 = setInterval(() => {
     var rawSnapshot = {
         tickTime: tm2,
         serverId: "1234",
-        missionName: "ark_co68_30_minutes_loadout.ThirskW"
+        missionName: "ark_co68_30_minutes_loadout.ThirskW",
+        worldName: "ThirskW"
     };
     Config.seriesAxes.forEach(prop => {
         rawSnapshot[prop] = Math.random() * Config.series[prop].maxValue;
@@ -79,17 +67,17 @@ var int2 = setInterval(() => {
 }, 1000);
 
 setTimeout(() => {
-    processMissionInit("123");
     clearInterval(int1);
 }, 5000);
 
 setTimeout(() => {
-    var tm3 = 0;
+    var tm3 = tm + 300;
 setInterval(() => {
     var rawSnapshot = {
         tickTime: tm3,
         serverId: "123",
-        missionName: "ark44_co98_the_great_crusade.Colleville"
+        missionName: "ark44_co98_the_great_crusade",
+        worldName: "Colleville"
     };
     Config.seriesAxes.forEach(prop => {
         rawSnapshot[prop] = Math.random() * Config.series[prop].maxValue;

@@ -3,7 +3,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry: {
-        app: "./app.js"
+        app: "./App.js"
     },
 
     output: {
