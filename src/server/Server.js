@@ -24,7 +24,7 @@ function updateServer(server, snapshot) {
     server.missionName = snapshot.missionName;
     server.worldName = snapshot.worldName;
     server.missionStartTime = snapshot.missionStartTime;
-    server.tickTime = snapshot.tickTime - snapshot.missionStartTime;
+    server.tickTime = snapshot.tickTime;
     server.fps = snapshot.fps;
     server.fpsMin = snapshot.fpsMin;
     server.cps = cps;

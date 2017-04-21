@@ -50,9 +50,6 @@ function start() {
     app.use("/", [ basicAuthConfig(config), express.static("resources") ]);
 
     app.post("/mission-init", (request, response) => {
-        const serverId = request.body.serverId;
-        Server.removeServer(serverId);
-        broadcastToClients(wss.clients, { type: "mission-init", serverId: serverId });
         response.json({});
     });
 
