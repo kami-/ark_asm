@@ -1,5 +1,9 @@
 const servers = {};
 
+function sanitize(value) {
+    return Math.max(value || 0, 0);
+}
+
 function getOrCreateServer(snapshot) {
     var server = servers[snapshot.serverId];
     if (!server) {
@@ -25,13 +29,13 @@ function updateServer(server, snapshot) {
     server.worldName = snapshot.worldName;
     server.missionStartTime = snapshot.missionStartTime;
     server.tickTime = snapshot.tickTime;
-    server.fps = snapshot.fps;
-    server.fpsMin = snapshot.fpsMin;
-    server.cps = cps;
-    server.playerCount = snapshot.playerCount;
-    server.localAiCount = snapshot.localAiCount;
-    server.remoteAiCount = snapshot.remoteAiCount;
-    server.entityCount = snapshot.entityCount;
+    server.fps = sanitize(snapshot.fps);
+    server.fpsMin = sanitize(snapshot.fpsMin);
+    server.cps = sanitize(cps);
+    server.playerCount = sanitize(snapshot.playerCount);
+    server.localAiCount = sanitize(snapshot.localAiCount);
+    server.remoteAiCount = sanitize(snapshot.remoteAiCount);
+    server.entityCount = sanitize(snapshot.entityCount);
     server.previousSnapshot = snapshot;
 }
 
