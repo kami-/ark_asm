@@ -3,6 +3,8 @@ ark_asm_fnc_postInit = {
     if (ark_asm_enabled) then {
         ark_asm_missionStartTime = diag_tickTime;
         ark_asm_conditionEvaluationCount = 0;
+        ark_asm_previousTickTime = 0;
+        ark_asm_previousConditionEvaluationCount = 0;
         ark_adm_monitorDelay = missionNamespace getVariable ["ark_adm_monitorDelay", 5];
         "ark_asm_extension" callExtension ["mission.init", []];
         [] call ark_asm_fnc_startMonitoring;
@@ -39,6 +41,18 @@ ark_asm_fnc_monitor = {
     ];
     "ark_asm_extension" callExtension ["mission.snapshot", _snapsot];
     //diag_log format ["[ark_asm]    Snapshot sent to server '%1'.", _snapsot];
+    ark_asm_previousConditionEvaluationCount = ark_asm_conditionEvaluationCount;
+    ark_asm_previousTickTime = diag_tickTime;
+};
+
+ark_asm_fnc_getCurrentCps = {
+    private _elapsedTime = diag_tickTime - ark_asm_previousTickTime;
+
+    if (_elapsedTime > 0) then {
+        (ark_asm_conditionEvaluationCount - ark_asm_previousConditionEvaluationCount) / _elapsedTime;
+    } else {
+        0;
+    };
 };
 
 [] call ark_asm_fnc_postInit;
