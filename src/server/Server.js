@@ -19,7 +19,7 @@ function getOrCreateServer(snapshot) {
 
 function updateServer(server, snapshot) {
     const previousSnapshot = server.previousSnapshot;
-    const elapsedTime = (snapshot.tickTime - previousSnapshot.tickTime);
+    const elapsedTime = snapshot.tickTime - previousSnapshot.tickTime;
     const cps = elapsedTime === 0
         ? 0
         : (snapshot.conditionEvaluationCount - previousSnapshot.conditionEvaluationCount) / elapsedTime;

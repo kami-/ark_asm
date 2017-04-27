@@ -13,6 +13,11 @@ webSocket.addEventListener("message", function (event) {
     }
 });
 
+webSocket.addEventListener("open", function (event) {
+    webSocket.send(JSON.stringify({ type: "test" }));
+});
+
+
 function processSnapshot(rawSnapshot) {
     var server = Store.getOrCreateServer(rawSnapshot.serverId);
     server.missionName = rawSnapshot.missionName;
@@ -35,7 +40,7 @@ function toPoint(tickTime, y) {
     return { x: tickTime, y: y };
 }
 
-/*
+
 var tm = 0;
 var int1 = setInterval(() => {
     var rawSnapshot = {
@@ -86,4 +91,3 @@ setInterval(() => {
     processSnapshot(rawSnapshot);
 }, 200)
 }, 10000);
-*/

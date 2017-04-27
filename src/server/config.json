@@ -4,5 +4,12 @@
     "users": {
         "admin": "admin",
         "server": "server"
+    },
+    "log": {
+        "pollingInterval": 60000,
+        "extension": "rpt",
+        "directories": [
+            "c:/Users/Major/AppData/Local/Arma 3"
+        ]
     }
 }
