@@ -4,7 +4,7 @@
   "description": "Arma server monitoring tool",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack --context src/client --config src/client/webpack.config.js && webpack --context src/server --config src/server/webpack.config.js"
   },
   "author": "Kami",
   "license": "MIT",

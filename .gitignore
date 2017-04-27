@@ -2,6 +2,5 @@ extension/build/*
 !extension/build/CMakeLists.txt
 extension/include/spdlog
 
-/node_modules
-
-/release
+web/node_modules
+web/release
