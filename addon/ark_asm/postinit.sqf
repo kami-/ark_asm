@@ -26,14 +26,15 @@ ark_asm_fnc_monitor = {
     private _remoteAiCount = count (allUnits select { alive _x && {!isPlayer _x} && {!local _x} });
     private _entityCount = count (entities [[], [], true, false]);
     private _snapsot = [
+        "profileName", profileName,
+        "isServer", isServer,
         "missionName", missionName,
         "worldName", worldName,
         "missionStartTime", ark_asm_missionStartTime,
         "tickTime", diag_tickTime,
         "fps", diag_fps,
         "fpsMin", diag_fpsMin,
-        "frameNumber", diag_frameNo,
-        "conditionEvaluationCount", ark_asm_conditionEvaluationCount,
+        "cps", [] call ark_asm_fnc_getCurrentCps,
         "playerCount", _playerCount,
         "localAiCount", _localAiCount,
         "remoteAiCount", _remoteAiCount,
