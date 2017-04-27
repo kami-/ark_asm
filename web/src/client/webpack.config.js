@@ -7,7 +7,7 @@ module.exports = {
     },
 
     output: {
-        path: path.resolve(__dirname, "../../release/server/resources"),
+        path: path.resolve(__dirname, "../../release/resources"),
         filename: "js/[name].js"
     },
 
