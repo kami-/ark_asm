@@ -8,6 +8,7 @@ const WebSocket = require("ws");
 
 const Server = require("./Server");
 const Snapshot = require("./Snapshot");
+const Auth = require("./Auth");
 
 function loadConfig() {
     const defaultConfig = {
@@ -65,4 +66,4 @@ function start() {
     });
 }
 
-start();
+Auth.init(start);
