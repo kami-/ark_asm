@@ -1,16 +1,18 @@
+const http = require("http");
+const fs = require("fs");
+
 const express = require("express");
 const basicAuth = require("express-basic-auth");
 const bodyParser = require("body-parser");
 const WebSocket = require("ws");
-const fs = require("fs");
 
 const Server = require("./Server");
 const Snapshot = require("./Snapshot");
 
 function loadConfig() {
     const defaultConfig = {
-        "httpPort": 8083,
-        "webSocketPort": 8084
+        "port": 8083,
+        "users": []
     };
     try {
         var config = JSON.parse(fs.readFileSync("./config.json", "utf8"));
@@ -38,13 +40,10 @@ function basicAuthConfig(config) {
 
 function start() {
     const config = loadConfig();
-
-    const wss = new WebSocket.Server({
-        perMessageDeflate: false,
-        port: config.webSocketPort
-    });
-
     const app = express();
+    const server = http.createServer(app);
+    const wss = new WebSocket.Server({ server });
+
     app.use(bodyParser.json());
 
     app.use("/", [ basicAuthConfig(config), express.static("resources") ]);
@@ -61,8 +60,8 @@ function start() {
         response.json({});
     });
 
-    const server = app.listen(config.httpPort, () => {
-        console.log(`HTTP listening on port ${server.address().port}.`);
+    server.listen(config.port, () => {
+        console.log(`Listening on port ${server.address().port}.`);
     });
 }
 

@@ -4,7 +4,7 @@ const Store = require("./Store");
 const Graph = require("./view/Graph");
 const Server = require("./view/Server");
 
-const webSocket = new WebSocket("ws://" + window.location.hostname + ":8084");
+const webSocket = new WebSocket("ws://" + window.location.host);
 
 webSocket.addEventListener("message", function (event) {
     const message = JSON.parse(event.data);
@@ -12,6 +12,7 @@ webSocket.addEventListener("message", function (event) {
         processSnapshot(message.snapshot);
     }
 });
+
 
 function processSnapshot(rawSnapshot) {
     var server = Store.getOrCreateServer(rawSnapshot.serverId);

@@ -1,6 +1,5 @@
 {
-    "httpPort": 8083,
-    "webSocketPort": 8084,
+    "port": 8083,
     "users": {
         "admin": "admin",
         "server": "server"
