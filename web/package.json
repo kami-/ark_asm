@@ -4,12 +4,13 @@
   "description": "Arma server monitoring tool",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --context src/client --config src/client/webpack.config.js && webpack --context src/server --config src/server/webpack.config.js"
+    "build": "webpack"
   },
   "author": "Kami",
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.17.1",
+    "cookie": "^0.3.1",
     "d3": "^3.5.17",
     "express": "^4.15.2",
     "express-basic-auth": "^1.0.1",

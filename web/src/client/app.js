@@ -3,19 +3,23 @@ const Config = require("./Config");
 const Store = require("./Store");
 const Graph = require("./view/Graph");
 const Server = require("./view/Server");
+const Login = require("./view/Login");
 
-const webSocket = new WebSocket("ws://" + window.location.host);
+m.mount(document.body, Login.createLoginComponent(connect));
 
-webSocket.addEventListener("message", function (event) {
-    const message = JSON.parse(event.data);
-    if (message.type === "mission-snapshot") {
-        processSnapshot(message.snapshot);
-    }
-});
+function connect() {
+    const webSocket = new WebSocket("ws://" + window.location.host);
 
+    webSocket.addEventListener("message", function (event) {
+        const message = JSON.parse(event.data);
+        if (message.type === "mission-snapshot") {
+            processSnapshot(message.snapshot);
+        }
+    });
+}
 
 function processSnapshot(rawSnapshot) {
-    var server = Store.getOrCreateServer(rawSnapshot.serverId);
+    var server = Store.Server.getOrCreateServer(rawSnapshot.serverId);
     server.missionName = rawSnapshot.missionName;
     server.worldName = rawSnapshot.worldName;
     server.tickTime = rawSnapshot.tickTime;

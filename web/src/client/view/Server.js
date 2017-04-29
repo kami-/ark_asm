@@ -5,7 +5,7 @@ const Graph = require("./Graph");
 
 const ServersComponent = {
     view: () => {
-        const servers = Store.getServers().map(serverView);
+        const servers = Store.Server.getServers().map(serverView);
         return m("div#servers", servers);
     }
 }

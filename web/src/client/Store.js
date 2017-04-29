@@ -1,6 +1,6 @@
 const Config = require("./Config");
 
-var servers = {};
+let servers = {};
 
 function getServers() {
     const serverIds = Object.getOwnPropertyNames(servers);
@@ -8,7 +8,7 @@ function getServers() {
 }
 
 function getOrCreateServer(serverId) {
-    var server = servers[serverId];
+    let server = servers[serverId];
     if (!server) {
         server = createServer(serverId);
         servers[server.serverId] = server;
@@ -26,7 +26,17 @@ function createServer(serverId) {
     };
 }
 
+
+
 module.exports = {
-    getServers: getServers,
-    getOrCreateServer: getOrCreateServer
+    Login: {
+        username: "",
+        password: "",
+        failed: false,
+        authToken: null
+    },
+    Server: {
+        getServers: getServers,
+        getOrCreateServer: getOrCreateServer
+    }
 };
