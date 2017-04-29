@@ -43,7 +43,7 @@ module.exports = {
     graph: {
         margin: { top: 20, right: 20, bottom: 20, left: 20 },
         xLengthInSeconds: 20 * 60,
-        width: 900,
-        height: 300
+        width: 750,
+        height: 260
     }
 }

@@ -19,7 +19,10 @@ function connect() {
 }
 
 function processSnapshot(rawSnapshot) {
-    var server = Store.Server.getOrCreateServer(rawSnapshot.serverId);
+    var server = Store.Server.getOrCreateServer(rawSnapshot.profileName);
+    server.serverId = rawSnapshot.serverId;
+    server.profileName = rawSnapshot.profileName;
+    server.isServer = rawSnapshot.isServer;
     server.missionName = rawSnapshot.missionName;
     server.worldName = rawSnapshot.worldName;
     server.tickTime = rawSnapshot.tickTime;

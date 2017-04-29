@@ -27,7 +27,6 @@ function listen(httpServer) {
 }
 
 function broadcastToClients(data) {
-    console.log("clients: ", server.clients.values());
     Array.from(server.clients.values())
         .filter(client => client.readyState === ws.OPEN)
         .forEach(client => { client.send(JSON.stringify(data)); });

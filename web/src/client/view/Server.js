@@ -17,11 +17,13 @@ function serverView(server) {
         const lastValue = data.length > 0 ? data[data.length - 1].y : 0;
         return fieldView(seriesConfig.label, lastValue, seriesConfig.color);
     });
+    const profileName = server.isServer ? `${server.profileName} (Server)` : server.profileName;
 
     return m("div.server", [
         m("div.summary", [
-            m("div.details", detailsView(server.missionName, server.worldName)),
-            m("div.series", fields)
+            m("div.details", profileName),
+            m("div.mission", missionView(server.missionName, server.worldName)),
+            m("div.legend", fields)
         ]),
         m("div.graph-container", {
             oncreate: function(vnode) {
@@ -31,7 +33,7 @@ function serverView(server) {
     ]);
 }
 
-function detailsView(missionName, worldName) {
+function missionView(missionName, worldName) {
     return m("span", missionName + "." + worldName);
 }
 
