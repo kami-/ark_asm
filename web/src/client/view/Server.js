@@ -20,21 +20,27 @@ function serverView(server) {
     const profileName = server.isServer ? `${server.profileName} (Server)` : server.profileName;
 
     return m("div.server", [
-        m("div.summary", [
-            m("div.details", profileName),
-            m("div.mission", missionView(server.missionName, server.worldName)),
-            m("div.legend", fields)
-        ]),
-        m("div.graph-container", {
-            oncreate: function(vnode) {
-                server.graph = Graph.createGraph(vnode.dom, server, Config.graph.width, Config.graph.height);
-            }
-        })
+        headerView(profileName, server.missionName, server.worldName),
+        m("div.content", [
+            m("div.legend", fields),
+            m("div.graph-container", {
+                oncreate: function(vnode) {
+                    server.graph = Graph.createGraph(vnode.dom, server, Config.graph.width, Config.graph.height);
+                }
+            })
+        ])
+    ]);
+}
+
+function headerView(profileName, missionName, worldName) {
+    return m("div.header", [
+        m("div.profile", profileName),
+        missionView(missionName, worldName),
     ]);
 }
 
 function missionView(missionName, worldName) {
-    return m("span", missionName + "." + worldName);
+    return m("div.mission", missionName + "." + worldName);
 }
 
 function fieldView(label, value, color) {

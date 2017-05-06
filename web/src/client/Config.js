@@ -41,9 +41,9 @@ module.exports = {
     seriesAxes: seriesAxes,
     series: series,
     graph: {
-        margin: { top: 20, right: 20, bottom: 20, left: 20 },
+        margin: { top: 20, right: 20, bottom: 0, left: 20 },
         xLengthInSeconds: 20 * 60,
-        width: 750,
+        width: 700,
         height: 260
     }
 }

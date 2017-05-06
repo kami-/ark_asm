@@ -16,29 +16,54 @@
         }
 
         #servers {
-            width: 100%;
-            display: table;
-            margin: 10px;
+            margin: 5px;
         }
 
         #servers > .server {
-            display: table-row;
+            display: block;
+            width: 860px;
+            margin-bottom: 20px;
         }
 
-        .server > .summary {
-            display: table-cell;
+        .server > .header {
+            display: block;
+            border-bottom: 2px solid #333;
+            padding: 6px;
+            line-height: 21px;
+        }
+
+        .header > .profile {
+            display: inline-block;
+            font-size: 18px;
+            font-weight: bold;
+            margin-right: 20px;
+        }
+
+        .header > .mission {
+            display: block;
+            float: right;
+            text-align: center;
+        }
+
+        .server > .content {
+            display: block;
+        }
+
+        .content > .legend {
+            display: inline-block;
             vertical-align: top;
-            padding-right: 20px;
-            border-top: 1px solid #333;
+            padding: 5px 0 20px 0;
+        }
+
+        .content > .graph-container {
+            display: inline-block;
+            width: 700px;
+            border-left: 2px solid #333;
         }
 
         .details {
             margin: 10px 0 15px 0;
             font-weight: bold;
-        }
-
-        .mission {
-            margin-bottom: 20px;
         }
 
         .field {
@@ -50,20 +75,14 @@
         .field > label {
             display: inline-block;
             padding: 0 5px 0 5px;
-            width: 120px;
+            width: 90px;
         }
 
         .field > span.value {
             display: inline-block;
             padding: 0 5px 0 5px;
-            width: 50px;
+            width: 45px;
             text-align: right;
-        }
-
-        .server > .graph-container {
-            display: table-cell;
-            width: 100%;
-            border-top: 1px solid #333;
         }
 
         .graph .bg {

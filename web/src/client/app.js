@@ -47,6 +47,7 @@ function toPoint(tickTime, y) {
 var tm = 0;
 var int1 = setInterval(() => {
     var rawSnapshot = {
+        profileName: "hc_unit",
         tickTime: tm,
         serverId: "123",
         missionName: "ark44_co98_the_great_crusade",
@@ -62,6 +63,7 @@ var int1 = setInterval(() => {
 var tm2 = 0;
 var int2 = setInterval(() => {
     var rawSnapshot = {
+        profileName: "Administrator",
         tickTime: tm2,
         serverId: "1234",
         missionName: "ark_co68_30_minutes_loadout.ThirskW",
@@ -82,6 +84,7 @@ setTimeout(() => {
     var tm3 = tm + 300;
 setInterval(() => {
     var rawSnapshot = {
+        profileName: "hc_unit",
         tickTime: tm3,
         serverId: "123",
         missionName: "ark44_co98_the_great_crusade",
