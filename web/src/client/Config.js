@@ -1,17 +1,17 @@
 const series = {
         fps: {
             label: "FPS",
-            maxValue: 65,
+            maxValue: 125,
             color: "#F78900"
         },
         fpsMin: {
             label: "FPS Min",
-            maxValue: 65,
+            maxValue: 125,
             color: "#800000"
         },
         cps: {
             label: "CPS",
-            maxValue: 65,
+            maxValue: 125,
             color: "#E5E500"
         },
         playerCount: {
