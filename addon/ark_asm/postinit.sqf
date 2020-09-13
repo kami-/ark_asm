@@ -22,8 +22,8 @@ ark_asm_fnc_startMonitoring = {
 
 ark_asm_fnc_monitor = {
     private _playerCount = count (allUnits select { alive _x && {isPlayer _x} });
-    private _localAiCount = count (allUnits select { alive _x && {!isPlayer _x} && {local _x} });
-    private _remoteAiCount = count (allUnits select { alive _x && {!isPlayer _x} && {!local _x} });
+    private _localAiCount = count (allUnits select { alive _x && {simulationEnabled _x} && {!isPlayer _x} && {local _x} });
+    private _remoteAiCount = count (allUnits select { alive _x && {simulationEnabled _x} && {!isPlayer _x} && {!local _x} });
     private _entityCount = count (entities [[], [], true, false]);
     private _snapsot = [
         "profileName", profileName,
