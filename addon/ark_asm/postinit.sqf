@@ -22,8 +22,8 @@ ark_asm_fnc_startMonitoring = {
 
 ark_asm_fnc_monitor = {
     private _playerCount = count (allUnits select { alive _x && {isPlayer _x} });
-    private _localAiCount = count (allUnits select { alive _x && {simulationEnabled _x} && {!isPlayer _x} && {local _x} });
-    private _remoteAiCount = count (allUnits select { alive _x && {simulationEnabled _x} && {!isPlayer _x} && {!local _x} });
+    private _totalAiCount = count (allUnits select { alive _x && {!isPlayer _x} });
+    private _activeAiCount = count (allUnits select { alive _x && {simulationEnabled _x} && {!isPlayer _x} });
     private _entityCount = count (entities [[], [], true, false]);
     private _snapsot = [
         "profileName", profileName,
@@ -36,8 +36,8 @@ ark_asm_fnc_monitor = {
         "fpsMin", diag_fpsMin,
         "cps", [] call ark_asm_fnc_getCurrentCps,
         "playerCount", _playerCount,
-        "localAiCount", _localAiCount,
-        "remoteAiCount", _remoteAiCount,
+        "totalAiCount", _totalAiCount,
+        "activeAiCount", _activeAiCount,
         "entityCount", _entityCount
     ];
     "ark_asm_extension" callExtension ["mission.snapshot", _snapsot];
