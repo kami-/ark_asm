@@ -19,13 +19,13 @@ const series = {
             maxValue: 400,
             color: "#3EB2F2"
         },
-        localAiCount: {
-            label: "Local AI",
+        totalAiCount: {
+            label: "Total AI",
             maxValue: 1000,
             color: "#8ECFFF"
         },
-        remoteAiCount: {
-            label: "Remote AI",
+        activeAiCount: {
+            label: "Active AI",
             maxValue: 1000,
             color: "#C9E3FF"
         },
